@@ -1,4 +1,4 @@
-package com.thomas.RpcVersion0.common;
+package com.thomas.RpcVersion1.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
+
     //client and server args
     private Integer id;
     private String userName;
