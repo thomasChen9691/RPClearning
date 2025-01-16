@@ -9,12 +9,22 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     @Override
     public User getUserByUserId(Integer id) {
+        // Log the user ID being searched for
         System.out.println("client search" + id + "user");
-        //random select from database
+        
+        // Simulate fetching user data from a database with random values
+        // 模拟从数据库中取用户的行为
         Random random = new Random();
-        User user = User.builder().userName(UUID.randomUUID().toString())
+        User user = User.builder()
+                // Generate a random username using UUID
+                .userName(UUID.randomUUID().toString())
+                // Set the user ID to the provided ID
                 .id(id)
-                .sex(random.nextBoolean()).build();
+                // Randomly assign a gender (true for male, false for female)
+                .sex(random.nextBoolean())
+                .build();
+        
+        // Return the created User object
         return user;
     }
 }
