@@ -87,6 +87,22 @@ The result of this design is a more flexible and general RPC system, where the c
 
 ## Use of reflection and dynamic proxy
 - **Reflection**: In `RpcServer.java`, obtain and call the method requested by the client through the reflection mechanism:
-```java
+### java
 Method method = userService.getClass().getMethod(request.getMethodName(), request.getParamsTypes());
 Object invoke = method.invoke(userService, request.getParams());
+
+#### Summary
+
+1. Define a more general message format: Request and Response format, from now on, different methods may be called and various types of data may be returned.
+
+2. Dynamic proxy is used to encapsulate the requests of different service methods,
+
+3. The client is more loosely coupled and no longer bound to a specific Service, host, or port
+
+#### Existing pain points
+
+1. On the server side, we directly bind to the UserService service. What if there are other service interfaces exposed? (Registration of multiple services)
+
+2. Is the performance of the server side too low in the BIO mode?
+
+3. The server side functions are too complex: monitoring, processing. Loose coupling is required

@@ -1,5 +1,27 @@
 # RpcVersion0 Summary
 
+#### **Background knowledge**
+
+- Java basics
+- Java socket programming introduction
+- The project is built using Maven, and only the lombok package is introduced for the time being
+
+#### Questions in this section
+
+- **What is RPC, and how to complete an RPC?**
+
+The **simplest** process of an RPC is that the client **calls** a method on the server, and the server returns the return value of the execution method to the client. Next, I will use an example of fetching data from a database to simulate a complete process of the RPC process.
+
+**Assume** that there is a service like the following:
+
+Server:
+
+1. There is a User table
+2. UserServiceImpl implements the UserService interface
+3. There is only one function in UserService for the time being: getUserByUserId(Integer id)
+
+Client:Pass an ID to the server, and the server queries the User object and returns it to the client
+
 ## Overview
 The `RpcVersion0` directory contains a simple implementation of a Remote Procedure Call (RPC) system. This system allows a client to request data from a server over a network. The design is straightforward and serves as a basic example of how RPC can be implemented in Java.
 
@@ -45,3 +67,14 @@ The biggest pain point of this RPC:
 You can only call the only method of the server Service. What if there are two methods that need to be called? (Reuest needs abstraction)
 The return value only supports User objects. What if you need to pass a string or a Dog, String object (Response needs abstraction)
 The client is not universal enough, the host, port, and the calling method are all specific (need abstraction)
+#### Summary:
+
+This example uses less than 100 lines of code to implement a remote procedure call between the client and the server. It is very suitable for getting started. Of course, it is **extremely imperfect**, and even the message format is not unified. We will gradually improve it in the next version update.
+
+#### The biggest pain points of this RPC:
+
+1. Only the unique method of the server Service can be called. What if there are two methods that need to be called? (Reuest needs to be abstracted)
+
+2. The return value only supports User objects. What if a string or a Dog, String object needs to be passed (Response needs to be abstracted)
+
+3. The client is not universal enough. The host, port, and the calling method are all specific (need to be abstracted)

@@ -1,18 +1,7 @@
-# RpcVersion1 摘要
-### 1.MyRPC版本1
+# RpcVersion2 摘要
 
-#### 背景知识
-
-- 反射
-- 动态代理
-
-#### 本节问题
-
-- 如何使客户端请求远程方法支持多种?
-
-- 如何使服务端返回值的类型多样?
 ## 概述
-`RpcVersion1` 目录包含一个改进的远程过程调用（RPC）系统的实现。该系统允许客户端通过网络请求服务器上的数据，并支持多种方法调用和返回类型。设计更加灵活和通用，展示了如何在 Java 中实现更复杂的 RPC 系统。
+`RpcVersion2` 目录包含一个改进的远程过程调用（RPC）系统的实现。该系统允许客户端通过网络请求服务器上的数据，并支持多种方法调用和返回类型。设计更加灵活和通用，展示了如何在 Java 中实现更复杂的 RPC 系统。
 
 ## 目录结构
 - `client`: 包含发起 RPC 请求的客户端代码。
@@ -24,8 +13,8 @@
 
 ### RpcClient.java
 - 建立到服务器 `localhost` 上端口 `8899` 的套接字连接。
-- 使用 `ClientProxy` 动态代理生成 `UserService` 接口的代理对象。
-- 调用代理对象的方法 `getUserByUserId` 和 `insertUserId`，并打印返回结果。
+- 使用 `ClientProxy` 动态代理生成 `UserService` 和 `BlogService` 接口的代理对象。
+- 调用代理对象的方法 `getUserByUserId`、`insertUserId` 和 `getBlogById`，并打印返回结果。
 
 这种设计通过动态代理机制，使客户端可以灵活地调用服务端的多种方法，并接收不同类型的返回值。
 
@@ -50,12 +39,36 @@
 
 这种设计允许服务器通过创建新线程并发处理多个客户端连接，并通过反射机制动态调用服务方法，提高了系统的灵活性和可扩展性。
 
+### WorkThread.java
+- 负责解析客户端传来的 `RpcRequest` 请求，执行相应的服务方法，并将结果封装成 `RpcResponse` 返回给客户端。
+- 从 `RpcRequest` 中获取接口名、方法名和参数，通过反射机制调用服务方法。
+
+这种设计使服务器能够动态解析和执行客户端请求，提高了系统的灵活性。
+
+### UserService.java
+- 定义用户服务接口，包含 `getUserByUserId` 和 `insertUserId` 方法。
+- 客户端通过这个接口调用服务端的实现类。
+
+这种设计通过接口定义服务，使客户端和服务器之间的调用更加规范和统一。
+
 ### UserServiceImpl.java
 - 实现 `UserService` 接口。
 - 提供 `getUserByUserId` 方法，模拟从数据库中获取用户数据。
 - 提供 `insertUserId` 方法，模拟向数据库中插入用户数据。
 
 这种设计允许服务器模拟从数据库中获取和插入用户数据，而无需实际连接到数据库。
+
+### BlogService.java
+- 定义博客服务接口，包含 `getBlogById` 方法。
+- 客户端通过这个接口调用服务端的实现类。
+
+这种设计通过接口定义服务，使客户端和服务器之间的调用更加规范和统一。
+
+### BlogServiceImpl.java
+- 实现 `BlogService` 接口。
+- 提供 `getBlogById` 方法，模拟从数据库中获取博客数据。
+
+这种设计允许服务器模拟从数据库中获取博客数据，而无需实际连接到数据库。
 
 ### RpcRequest.java
 - 封装客户端请求的类，包含服务接口名、方法名、参数列表和参数类型。
@@ -69,12 +82,11 @@
 
 这种设计将响应的所有必要信息封装在一个对象中，便于在客户端和服务器之间传输，并提供统一的方式表示调用结果。
 
-### User.java
-- 用户类，包含用户的 ID、用户名和性别。
-- 使用 `Serializable` 接口，使对象可以通过网络传输。
-- 使用 Lombok 注解简化代码。
+### TestServer.java
+- 初始化并启动服务器，暴露 `UserService` 和 `BlogService` 接口。
+- 使用 `ServiceProvider` 注册服务接口，并启动 `RpcServer` 监听端口 `8899`。
 
-这种设计使用户对象可以在客户端和服务器之间传输，并简化了代码的编写。
+这种设计通过注册服务接口并启动服务器，使客户端可以通过网络调用服务端的方法。
 
 ## 结果
 这种设计的结果是一个更加灵活和通用的 RPC 系统，客户端可以请求服务器上的多种方法，并接收不同类型的返回值。服务器通过反射机制动态调用方法，并返回结果。该系统展示了 RPC 的高级实现，包括动态代理、反射、对象的序列化和反序列化，以及客户端连接的并发处理。
@@ -85,19 +97,7 @@
 - **并发处理**：服务器通过创建新线程并发处理多个客户端连接，提高了系统的性能和响应速度。
 
 ## 反射和动态代理的使用
-- **反射**：在 `RpcServer.java` 中，通过反射机制获取并调用客户端请求的方法：
-### java
-  Method method = userService.getClass().getMethod(request.getMethodName(), request.getParamsTypes());
-  Object invoke = method.invoke(userService, request.getParams());
-
-#### 总结
-
-1. 定义更加通用的消息格式：Request 与Response格式， 从此可能调用不同的方法，与返回各种类型的数据。
-2. 使用了动态代理进行不同服务方法的Request的封装，
-3. 客户端更加松耦合，不再与特定的Service，host，port绑定
-
-#### 存在的痛点
-
-1. 服务端我们直接绑定的是UserService服务，如果还有其它服务接口暴露呢?（多个服务的注册）
-2. 服务端以BIO的方式性能是否太低，
-3. 服务端功能太复杂：监听，处理。需要松耦合
+- **反射**：在 `WorkThread.java` 中，通过反射机制获取并调用客户端请求的方法：
+  ```java
+  Method method = service.getClass().getMethod(request.getMethodName(), request.getParamsTypes());
+  Object result = method.invoke(service, request.getParams());
