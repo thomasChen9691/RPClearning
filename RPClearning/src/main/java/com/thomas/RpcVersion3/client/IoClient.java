@@ -1,18 +1,12 @@
-package com.thomas.RpcVersion2.client;
+package com.thomas.RpcVersion3.client;
 
-import com.thomas.RpcVersion2.common.RpcRequest;
-import com.thomas.RpcVersion2.common.RpcResponse;
+import com.thomas.RpcVersion3.common.RpcRequest;
+import com.thomas.RpcVersion3.common.RpcResponse;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-/**
- *
-
 
 public class IoClient {
     // 这里负责底层与服务端的通信，发送的Request，接受的是Response对象
@@ -42,21 +36,6 @@ public class IoClient {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace(); // 打印异常信息
             return null;
-        }
-    }
-} */
-public class IoClient {
-    public static RpcResponse sendRequest(String host, int port, RpcRequest request) throws IOException, ClassNotFoundException {
-        try (Socket socket = new Socket(host, port);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-             ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream())) {
-
-
-            objectOutputStream.writeObject(request);
-            objectOutputStream.flush();
-
-
-            return (RpcResponse) objectInputStream.readObject();
         }
     }
 }

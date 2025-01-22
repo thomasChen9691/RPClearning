@@ -1,8 +1,7 @@
-package com.thomas.RpcVersion2.server;
+package com.thomas.RpcVersion3.server;
 
 
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 /**
@@ -26,7 +25,6 @@ public class ServiceProvider {
 
         for(Class clazz : interfaces){
             interfaceProvider.put(clazz.getName(),service);
-            System.out.println("Registered service interface: " + clazz.getName());
         }
 
     }

@@ -1,10 +1,7 @@
-package com.thomas.RpcVersion2.server;
+package com.thomas.RpcVersion3.server;
 
 import com.thomas.RpcVersion0.service.Impl.BlogServiceImpl;
-import com.thomas.RpcVersion2.service.Impl.UserServiceImpl;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.thomas.RpcVersion3.service.Impl.UserServiceImpl;
 
 public class TestServer {
     public static void main(String[] args) {
@@ -19,8 +16,8 @@ public class TestServer {
         serviceProvider.provideServiceInterface(userService);
         serviceProvider.provideServiceInterface(blogService);
 
-        RpcServer rpcServer = new SimpleRpcServer(serviceProvider);
-        //RpcServer rpcServer = new ThreadPoolRpcServer(serviceProvider);
+        //RpcServer rpcServer = new SimpleRpcServer(serviceProvider);
+        RpcServer rpcServer = new ThreadPoolRpcServer(serviceProvider);
         rpcServer.start(8899);
 
 
